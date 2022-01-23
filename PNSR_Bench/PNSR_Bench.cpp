@@ -6,10 +6,12 @@
 #include "bmpImage.hpp"
 
 #define MAXI 255 * 255
+#define Threshold 7
 
 using namespace std;
 
 int width, height; 
+
 
 void ReadDataFromImage(string name, IMAGEDATA *&output)
 {
@@ -40,20 +42,46 @@ void ReadDataFromImage(string name, IMAGEDATA *&output)
     fclose(fpi);
 }
 
+// FS Compare
+double Calculate_Accuracy(IMAGEDATA *origin, IMAGEDATA* target)
+{
+    double sum = 0;
+    for (int i = 0; i < width; i++)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            if (abs(origin[j * width + i].red -  target[j * width + i].red) > Threshold)
+            {
+                sum++;
+                continue;
+            }
+            if (abs(origin[j * width + i].green -  target[j * width + i].green) > Threshold)
+            {
+                sum++;
+                continue;
+            }
+            if (abs(origin[j * width + i].blue -  target[j * width + i].blue) > Threshold)
+            {
+                sum++;
+                continue;
+            }
+        }
+    }
+    return  1.f - sum / ( width * height);
+}
 
+// PNSR
 double Calculate_PNSR(IMAGEDATA *origin, IMAGEDATA* target)
 {
     double sum = 0.f;
-    for (int k = 0; k < 3; k++)
+
+    for (int i = 0; i < width; i++)
     {
-        for (int i = 0; i < width; i++)
+        for (int j = 0; j < height; j++)
         {
-            for (int j = 0; j < height; j++)
-            {
-                sum += pow(origin[j * width + i].red -  target[j * width + i].red, 2);
-                sum += pow(origin[j * width + i].green -  target[j * width + i].green, 2);
-                sum += pow(origin[j * width + i].blue -  target[j * width + i].blue, 2);
-            }
+            sum += pow(origin[j * width + i].red -  target[j * width + i].red, 2);
+            sum += pow(origin[j * width + i].green -  target[j * width + i].green, 2);
+            sum += pow(origin[j * width + i].blue -  target[j * width + i].blue, 2);
         }
     }
     double MSE = sum / ( width * height * 3);
@@ -79,7 +107,7 @@ int main()
     }
 
     ///
-    cout << "PNSR Bench Test:" << endl;
+    cout << "Bench Test:" << endl;
 
     for ( auto item : image_map)
     {  
@@ -90,8 +118,10 @@ int main()
         int index = 1;
         for ( auto name: target_set)
         {
-            double result = Calculate_PNSR(image_map[origin_image], image_map[name]);
-            cout << "PNSR Result With "<< index++ <<": "<< result << "dB" << endl;
+            double result_PNSR = Calculate_PNSR(image_map[origin_image], image_map[name]);
+            double result_ACCU = Calculate_Accuracy(image_map[origin_image], image_map[name]);
+            cout << "Bench Result With "<< index++ <<": PNSR "<< result_PNSR << "dB"
+                 << " Accuracy " << result_ACCU << endl;
         }
     }
     cout << "PNSR Bench End" << endl;
