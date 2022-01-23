@@ -1,0 +1,9 @@
+{
+    "Image_True":[
+		{"name":"Origin.bmp"}
+    ],
+    "Image_SMEMC":[
+        {"name":"Target1.bmp"},
+        {"name":"Target2.bmp"}
+    ]
+}
