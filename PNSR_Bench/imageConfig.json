@@ -5,5 +5,7 @@
     "Image_SMEMC":[
         {"name":"Target1.bmp"},
         {"name":"Target2.bmp"}
-    ]
+    ],
+    "Threshold": 7,
+    "MV": 12
 }

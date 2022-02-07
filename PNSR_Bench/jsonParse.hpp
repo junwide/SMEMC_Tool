@@ -25,7 +25,8 @@ void ReadJson( rapidjson::Document &object, const std::string file_path)
 void ConfigPares(
     std::string &origin_name,
     std::vector<std::string> &target_name,
-    rapidjson::Document &object)
+    rapidjson::Document &object,
+    std::uint16_t value)
 {
     {
         const rapidjson::Value &image_set = object["Image_True"];
@@ -38,5 +39,9 @@ void ConfigPares(
         {
             target_name.push_back(Smemc_set[i]["name"].GetString());
         }
+    }
+    {
+        const rapidjson::Value &Smemc_set = object["Threshold"];
+        value = Smemc_set.GetInt();
     }
 }

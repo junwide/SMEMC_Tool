@@ -6,7 +6,7 @@
 #include "bmpImage.hpp"
 
 #define MAXI 255 * 255
-#define Threshold 7
+uint16_t Threshold  = 3;
 
 using namespace std;
 
@@ -97,7 +97,7 @@ int main()
 
     rapidjson::Document object_json;
 	ReadJson(object_json, "./imageConfig.json");
-    ConfigPares(origin_image, target_set, object_json);
+    ConfigPares(origin_image, target_set, object_json, Threshold);
 
     image_map[origin_image] = NULL;
 
